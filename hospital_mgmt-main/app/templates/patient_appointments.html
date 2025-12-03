@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment History</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+</head>
+
+<body class="p-5">
+<div class="container">
+
+    <h4 class="mb-4">My Scheduled Visits</h4>
+
+    {% if appointments %}
+
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th style="width: 180px;">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for a in appointments %}
+                <tr>
+                    <td>Dr. {{ a.doctor.name }}</td>
+                    <td>{{ a.date }}</td>
+                    <td>{{ a.time }}</td>
+                    <td>
+                        <span class="
+                            {% if a.status == 'Booked' %}
+                                text-success
+                            {% elif a.status == 'Cancelled' %}
+                                text-danger
+                            {% else %}
+                                text-muted
+                            {% endif %}
+                        ">
+                            {{ a.status }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {% if a.status == "Booked" %}
+                            <a
+                                class="btn btn-sm btn-outline-warning"
+                                href="{{ url_for('main.reschedule_appointment', appt_id=a.id) }}"
+                            >
+                                Reschedule
+                            </a>
+
+                            <a
+                                class="btn btn-sm btn-outline-danger"
+                                href="{{ url_for('main.cancel_appointment', appt_id=a.id) }}"
+                            >
+                                Cancel
+                            </a>
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    {% else %}
+        <p class="text-muted">
+            You do not have any appointments yet.
+        </p>
+    {% endif %}
+
+    <a href="{{ url_for('main.patient_dashboard') }}">
+        ← Back to Dashboard
+    </a>
+
+</div>
+</body>
+</html>

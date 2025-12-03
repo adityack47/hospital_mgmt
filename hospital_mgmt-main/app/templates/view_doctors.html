@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Management</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+</head>
+
+<body class="p-5">
+<div class="container">
+
+    <h3>Registered Doctors</h3>
+    <p class="text-muted">
+        View and manage all doctors currently registered in the system.
+    </p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">
+              {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if doctors %}
+        <table class="table table-bordered mt-3">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Account Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for doc in doctors %}
+                <tr>
+                    <td>{{ doc.name }}</td>
+                    <td>{{ doc.email }}</td>
+                    <td>
+                        {% if doc.active %}
+                            <span class="text-success">Active</span>
+                        {% else %}
+                            <span class="text-danger">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if doc.active %}
+                            <a class="btn btn-sm btn-warning"
+                               href="{{ url_for('main.edit_doctor', doctor_id=doc.id) }}">
+                                Edit
+                            </a>
+
+                            <a class="btn btn-sm btn-outline-danger"
+                               href="{{ url_for('main.deactivate_doctor', doctor_id=doc.id) }}"
+                               onclick="return confirm('Deactivate this doctor?');">
+                                Deactivate
+                            </a>
+                        {% else %}
+                            <span class="text-muted">No actions</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-muted">
+            No doctors have been added yet.
+        </p>
+    {% endif %}
+
+    <br>
+    <a href="{{ url_for('main.admin_dashboard') }}">
+        ← Back to Admin Dashboard
+    </a>
+
+</div>
+</body>
+</html>
